@@ -25,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   not open. `record::FIXUP_STRIDE` (512) is now used for MFT records, INDX
   buffers and attribute-list extension records (#18).
 
+- `NtfsFs` followed `$ATTRIBUTE_LIST` references by record number alone, so a
+  list naming a record since reallocated to another file grafted that file's
+  attributes onto the base. File reads, `runs_by_record` and the `$MFT`
+  bootstrap now check every reference: a live base needs a live extension at
+  the referenced sequence; a deleted base accepts a free extension at the
+  referenced sequence or the one freeing gives it, so deleted files stay
+  readable. A zero sequence is not checked. A mismatch is
+  `NtfsError::BadAttributeList` (#21).
+
 ## [ntfs-core 0.7.1 / ntfs-forensic 0.6.1] — 2026-06-09
 
 ### Docs
